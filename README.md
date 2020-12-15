@@ -9,5 +9,7 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## TODO checklist (Remove when finished)
-* List of required package version number in `test/collect_env.py//info_packages`
-* Update link to `test/collect_env.py` in `.github/ISSUE_TEMPLATE/bug_report.md//Environment`
+- [ ] List of required package version number in `.github/collect_env.py//info_packages`
+- [ ] Update link to `.github/collect_env.py` in `.github/ISSUE_TEMPLATE/bug_report.md//Environment`
+- [ ] Rename `.github/workflows/toc.yaml.off` to `.github/workflows/toc.yaml`
+- [ ] Add **secrets.GITHUB_TOKEN**

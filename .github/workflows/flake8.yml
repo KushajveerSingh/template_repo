@@ -1,0 +1,40 @@
+name: Lint
+
+on:
+  push:
+    branches: main
+  pull_request:
+
+jobs:
+  flake8-py3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          architecture: x64
+      - name: Fetch repo
+        uses: actions/checkout@v2
+      - name: Checkout PR tip
+        run: |
+          set -eux
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git checkout ${{ github.event.pull_request.head.sha }}
+          fi
+          echo ::set-output name=commit_sha::$(git rev-parse HEAD)
+        id: get_pr_tip
+      - name: Run flake8
+        run: |
+          set -eux
+          pip install -r requirements-flake8.txt
+          flake8 | tee ${GITHUB_WORKSPACE}/flake8-output.txt
+      - name: Add annotations
+        uses: pytorch/add-annotations-github-action@master
+        with:
+          check_name: 'flake8-py3'
+          linter_output_path: 'flake8-output.txt'
+          commit_sha: ${{ steps.get_pr_tip.outputs.commit_sha }}
+          regex: '^(?<filename>.*?):(?<lineNumber>\d+):(?<columnNumber>\d+): (?<errorCode>\w\d+) (?<errorDesc>.*)'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
